@@ -3489,7 +3489,8 @@ void Aura::HandleModCharm(bool apply, bool Real)
         target->RemoveSpellsCausingAura(SPELL_AURA_MOD_POSSESS, GetHolder());
 
         target->SetCharmerGuid(GetCasterGuid());
-        target->setFaction(caster->getFaction());
+	if (GetId() != 30019)
+        	target->setFaction(caster->getFaction());
         target->CastStop(target == caster ? GetId() : 0);
         caster->SetCharm(target);
 
@@ -3499,9 +3500,13 @@ void Aura::HandleModCharm(bool apply, bool Real)
 
         if (target->GetTypeId() == TYPEID_UNIT)
         {
-            ((Creature*)target)->AIM_Initialize();
+            
+	    if(GetId()!=30019)	((Creature*)target)->AIM_Initialize();
             CharmInfo* charmInfo = target->InitCharmInfo(target);
-            charmInfo->InitCharmCreateSpells();
+            if (GetId()!=30019)
+		charmInfo->InitPossessCreateSpells();
+	    else
+		charmInfo->InitCharmCreateSpells();
             charmInfo->SetReactState(REACT_DEFENSIVE);
 
             if (caster->GetTypeId() == TYPEID_PLAYER && caster->getClass() == CLASS_WARLOCK)
